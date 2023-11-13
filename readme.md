@@ -5,6 +5,10 @@ real-ish project.
 
 Will document as I go.
 
+## Development
+
+Start the backend server with `go run . serve`.
+
 ## CLI Commands
 
 CLI commands are managed with [Cobra](https://cobra.dev/). Useful docs:

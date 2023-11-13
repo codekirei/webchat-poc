@@ -9,7 +9,7 @@ import (
 var helloCmd = &cobra.Command{
 	Use:   "hello",
 	Short: "Prints hello world",
-	Run:   run,
+	Run:   hello,
 }
 
 func init() {
@@ -26,6 +26,6 @@ func init() {
 	// helloCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func run(cmd *cobra.Command, args []string) {
+func hello(cmd *cobra.Command, args []string) {
 	fmt.Println("hello world")
 }
