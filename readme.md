@@ -29,6 +29,9 @@ some things to add:
 - proper ci/cd
 - swagger api documentation
 - data backups
+- a more robust implementation for message ordering to avoid clock drift bugs
+  (i.e. [vector clocks](https://en.wikipedia.org/wiki/Vector_clock) as used in
+  [CRDTs](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type))
 - compliance with data retention regulation (i.e. support user data deletion
   and export for [GDPR](https://gdpr.eu/))
 - a more performant DB for the data model (specifically chat history --
