@@ -3,10 +3,8 @@ package cmd
 import (
 	"log"
 
-	"github.com/codekirei/webchat-poc/backend/constants"
 	"github.com/codekirei/webchat-poc/backend/server"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // serveCmd represents the serve command
@@ -22,7 +20,5 @@ func init() {
 
 func serve(cmd *cobra.Command, args []string) {
 	log.Print("serve called")
-	dbDir := viper.GetString(constants.DB_DIR)
-	log.Printf("dbdir: %v", dbDir)
 	server.Start()
 }
