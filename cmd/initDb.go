@@ -3,9 +3,8 @@ package cmd
 import (
 	"log"
 
-	"github.com/codekirei/webchat-poc/backend/constants"
+	"github.com/codekirei/webchat-poc/backend/db"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // initDbCmd represents the initDb command
@@ -20,6 +19,13 @@ func init() {
 }
 
 func initDb(cmd *cobra.Command, args []string) {
-	dbDir := viper.GetString(constants.DB_DIR)
-	log.Printf("dbdir: %v", dbDir)
+	_db := db.GetDb()
+	_, err := _db.Exec(`
+    drop table if exists t;
+    create table t(i);
+    insert into t values(42), (314);
+  `)
+	if err != nil {
+		log.Fatalf("unable to initialize db: %v", err)
+	}
 }
