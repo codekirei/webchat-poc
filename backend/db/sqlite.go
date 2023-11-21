@@ -5,13 +5,13 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/codekirei/webchat-poc/backend/constants"
+	"github.com/codekirei/webchat-poc/backend/constant"
 	"github.com/spf13/viper"
 	_ "modernc.org/sqlite"
 )
 
 func GetDb() *sql.DB {
-	dbDir := viper.GetString(constants.DB_DIR)
+	dbDir := viper.GetString(constant.DB_DIR)
 	dbFile := filepath.Join(dbDir, "webchat-db")
 	db, err := sql.Open("sqlite", dbFile)
 	if err != nil {
