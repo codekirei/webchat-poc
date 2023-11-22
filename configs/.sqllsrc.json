@@ -1,0 +1,5 @@
+{
+  "name": "webchat-poc",
+  "adapter": "sqlite3",
+  "filename": "${env:XDG_DATA_HOME}/webchat-poc/webchat-db"
+}

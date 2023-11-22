@@ -1,0 +1,7 @@
+[sqlfluff]
+dialect = sqlite
+exclude_rules = LT02, LT09
+
+# HOWTO config | https://docs.sqlfluff.com/en/stable/configuration.html
+# HOWTO rules  | https://docs.sqlfluff.com/en/stable/rules.html
+# vim: ft=cfg
