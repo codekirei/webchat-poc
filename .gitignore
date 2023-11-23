@@ -25,3 +25,9 @@ dist-ssr
 
 # Go
 webchat-poc
+
+# Configs should not be in root
+/.sql-formatter.json
+/.sqlfluff
+/.sqlintrc.json
+/.sqllsrc.json
