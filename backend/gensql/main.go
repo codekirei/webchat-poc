@@ -12,18 +12,18 @@ type (
 )
 
 // TODO: allow header override
-// TODO: allow passing in mutation func as arg
 func Generate(pkg string, inputPath string, outputPath string, opts Opts) {
 	log.Printf("Generating %s", outputPath)
-	gen := CreateGenerator(pkg, inputPath, outputPath, opts)
 
-	gen.CreateFileAndWriteHeader()
+	g := CreateGenerator(pkg, inputPath, outputPath, opts)
 
-	gen.OpenOutFile()
-	defer gen.OutFile.Close()
+	g.CreateFileAndWriteHeader()
 
-	gen.GetInputFiles()
-	gen.ParseInputFiles()
+	g.OpenOutFile()
+	defer g.OutFile.Close()
+
+	g.GetInputFiles()
+	g.ParseInputFiles()
 
 	log.Printf("Finished generating %s", outputPath)
 }

@@ -48,8 +48,13 @@ func camelize(str string) string {
 	return out.String()
 }
 
-func fileToConst(path string) string {
+func pathToFile(path string) string {
 	basename := filepath.Base(path)
 	filename := strings.TrimSuffix(basename, filepath.Ext(basename))
+	return filename
+}
+
+func fileToConst(path string) string {
+	filename := pathToFile(path)
 	return camelize(filename)
 }

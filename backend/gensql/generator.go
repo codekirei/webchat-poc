@@ -9,17 +9,17 @@ import (
 
 type Generator struct {
 	Package    string
-	InputPath  string
+	InputGlob  string
 	OutputPath string
 	OutFile    *os.File
-	Files      []string
+	FilePaths  []string
 	Mutator    Mutator
 }
 
-func CreateGenerator(pkg string, inputPath string, outputPath string, opts Opts) *Generator {
+func CreateGenerator(pkg string, inputGlob string, outputPath string, opts Opts) *Generator {
 	gen := &Generator{
 		Package:    pkg,
-		InputPath:  inputPath,
+		InputGlob:  inputGlob,
 		OutputPath: outputPath,
 	}
 
@@ -63,8 +63,8 @@ func (g *Generator) AppendToOut(str string) {
 }
 
 func (g *Generator) GetInputFiles() {
-	files, _ := filepath.Glob(g.InputPath)
-	g.Files = files
+	files, _ := filepath.Glob(g.InputGlob)
+	g.FilePaths = files
 }
 
 func (g *Generator) Mutate(str string) string {
@@ -81,7 +81,7 @@ func (g *Generator) Mutate(str string) string {
 }
 
 func (g *Generator) ParseInputFiles() {
-	for _, v := range g.Files {
+	for _, v := range g.FilePaths {
 		log.Printf("Processing input file: %s", v)
 		constName := fileToConst(v)
 		content := readFile(v)
