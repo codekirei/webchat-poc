@@ -12,3 +12,6 @@ func init() {
 func main() {
 	cmd.Execute()
 }
+
+//go:generate go run generate.go
+//go:generate gofmt -s -w backend/db/sqlite/queries.go
