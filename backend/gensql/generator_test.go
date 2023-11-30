@@ -20,4 +20,17 @@ func TestCreateGeneratorNoMut(t *testing.T) {
 }
 
 func TestCreateGeneratorWithMut(t *testing.T) {
+	callCount := 0
+	mut := func(str string) (string, error) {
+		callCount += 1
+		return str, nil
+	}
+
+	g := CreateGenerator(pkg, inputGlob, outputPath, Opts{
+		MutateSql: mut,
+	})
+
+	gotWant(t, callCount, 0)
+	g.Mutator("hello world")
+	gotWant(t, callCount, 1)
 }

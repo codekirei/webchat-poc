@@ -12,6 +12,7 @@ type (
 )
 
 // TODO: allow header override
+// TODO: add silent option to hide logs
 func Generate(pkg string, inputPath string, outputPath string, opts Opts) {
 	log.Printf("Generating %s", outputPath)
 
