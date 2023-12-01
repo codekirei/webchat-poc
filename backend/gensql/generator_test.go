@@ -34,3 +34,12 @@ func TestCreateGeneratorWithMut(t *testing.T) {
 	g.Mutator("hello world")
 	gotWant(t, callCount, 1)
 }
+
+func TestCreateFileAndWriteHeader(t *testing.T) {
+}
+
+func TestMutate(t *testing.T) {
+}
+
+func TestOpenAndAppend(t *testing.T) {
+}
