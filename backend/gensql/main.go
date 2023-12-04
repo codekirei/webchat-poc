@@ -2,6 +2,7 @@ package gensql
 
 import (
 	"log"
+	"os"
 )
 
 type (
@@ -12,19 +13,29 @@ type (
 )
 
 // TODO: allow header override
+// TODO: add varNameSuffix
 // TODO: add silent option to hide logs
 func Generate(pkg string, inputPath string, outputPath string, opts Opts) {
 	log.Printf("Generating %s", outputPath)
 
 	g := CreateGenerator(pkg, inputPath, outputPath, opts)
 
-	g.CreateFileAndWriteHeader()
+	f, err := os.OpenFile(
+		g.OutputPath,
+		os.O_CREATE|os.O_TRUNC|os.O_APPEND|os.O_WRONLY,
+		0644,
+	)
+	if err != nil {
+		panic(err)
+	}
 
-	g.OpenOutFile()
-	defer g.OutFile.Close()
+	defer f.Close()
+
+	truncateFile(f)
+	g.WriteHeader(f)
 
 	g.GetInputFiles()
-	g.ParseInputFiles()
+	g.ParseInputFiles(f)
 
 	log.Printf("Finished generating %s", outputPath)
 }

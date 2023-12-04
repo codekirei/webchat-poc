@@ -1,6 +1,7 @@
 package gensql
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,6 +16,20 @@ func readFile(path string) string {
 		panic(err)
 	}
 	return string(content)
+}
+
+func writeString(w io.Writer, s string) {
+	_, err := io.WriteString(w, s)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func truncateFile(f *os.File) {
+	err := f.Truncate(0)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func camelize(str string) string {
