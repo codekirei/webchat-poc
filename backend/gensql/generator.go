@@ -1,9 +1,11 @@
 package gensql
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"path/filepath"
 )
 
@@ -11,55 +13,50 @@ type Generator struct {
 	Package    string
 	InputGlob  string
 	OutputPath string
-	FilePaths  []string
-	Mutator    Mutator
 }
 
-func CreateGenerator(pkg string, inputGlob string, outputPath string, opts Opts) *Generator {
-	gen := &Generator{
-		Package:    pkg,
-		InputGlob:  inputGlob,
-		OutputPath: outputPath,
+func (g *Generator) getWriter() io.Writer {
+	if g.OutputPath == "" {
+		return new(bytes.Buffer)
 	}
-
-	if opts.MutateSql != nil {
-		gen.Mutator = opts.MutateSql
-	}
-
-	return gen
+	return g.openOutputFile()
 }
 
-func (g *Generator) WriteHeader(w io.Writer) string {
-	header := fmt.Sprintf(headerTemplate, g.Package)
-	writeString(w, header)
-	return header
-}
-
-func (g *Generator) GetInputFiles() []string {
-	files, _ := filepath.Glob(g.InputGlob)
-	g.FilePaths = files
-	return files
-}
-
-func (g *Generator) Mutate(str string) string {
-	if g.Mutator == nil {
-		return str
-	}
-
-	mStr, err := g.Mutator(str)
+func (g *Generator) openOutputFile() *os.File {
+	f, err := os.OpenFile(
+		g.OutputPath,
+		os.O_CREATE|os.O_TRUNC|os.O_APPEND|os.O_WRONLY,
+		0644,
+	)
 	if err != nil {
 		panic(err)
 	}
 
-	return mStr
+	err = f.Truncate(0)
+	if err != nil {
+		f.Close()
+		panic(err)
+	}
+
+	return f
 }
 
-func (g *Generator) ParseInputFiles(w io.Writer) {
-	for _, v := range g.FilePaths {
+func (g *Generator) buildHeader() string {
+	header := fmt.Sprintf(headerTemplate, g.Package)
+	return header
+}
+
+func (g *Generator) getInputFiles() []string {
+	paths, _ := filepath.Glob(g.InputGlob)
+	return paths
+}
+
+func (g *Generator) parseInputFiles(w io.Writer, paths []string) {
+	for _, v := range paths {
 		log.Printf("Processing input file: %s", v)
 		constName := fileToConst(v)
 		content := readFile(v)
-		mContent := g.Mutate(content)
+		mContent := mutate(content)
 		output := fmt.Sprintf(constTemplate, constName, mContent)
 		writeString(w, output)
 		log.Printf("Finished processing %s", v)

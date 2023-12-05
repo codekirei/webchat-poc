@@ -5,37 +5,23 @@ import (
 	"os"
 )
 
-type (
-	Mutator func(string) (string, error)
-	Opts    struct {
-		MutateSql Mutator
-	}
-)
-
-// TODO: allow header override
-// TODO: add varNameSuffix
-// TODO: add silent option to hide logs
-func Generate(pkg string, inputPath string, outputPath string, opts Opts) {
+func Generate(pkg string, inputPath string, outputPath string) {
 	log.Printf("Generating %s", outputPath)
 
-	g := CreateGenerator(pkg, inputPath, outputPath, opts)
+	g := &Generator{pkg, inputPath, outputPath}
 
-	f, err := os.OpenFile(
-		g.OutputPath,
-		os.O_CREATE|os.O_TRUNC|os.O_APPEND|os.O_WRONLY,
-		0644,
-	)
-	if err != nil {
-		panic(err)
+	w := g.getWriter()
+
+	f, isFile := w.(*os.File)
+	if isFile {
+		defer f.Close()
 	}
 
-	defer f.Close()
+	header := g.buildHeader()
+	writeString(w, header)
 
-	truncateFile(f)
-	g.WriteHeader(f)
-
-	g.GetInputFiles()
-	g.ParseInputFiles(f)
+	paths := g.getInputFiles()
+	g.parseInputFiles(w, paths)
 
 	log.Printf("Finished generating %s", outputPath)
 }

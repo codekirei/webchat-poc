@@ -1,6 +1,7 @@
 package gensql
 
 import (
+	"bytes"
 	"reflect"
 	"testing"
 )
@@ -46,6 +47,13 @@ func gotNil(t *testing.T, got any) {
 	}
 }
 
+func TestWriteString(t *testing.T) {
+	b := new(bytes.Buffer)
+	s := "hello world"
+	writeString(b, s)
+	gotWant(t, b.String(), s)
+}
+
 var camelizeCases = []struct {
 	input string
 	want  string
@@ -66,5 +74,19 @@ func TestPathToFile(t *testing.T) {
 	input := "some/file/path/file_name.go"
 	want := "file_name"
 	got := pathToFile(input)
+	gotWant(t, got, want)
+}
+
+func TestFileToConst(t *testing.T) {
+	input := "some/file_name.go"
+	want := "fileNameStmt"
+	got := fileToConst(input)
+	gotWant(t, got, want)
+}
+
+func TestMutate(t *testing.T) {
+	input := "select * from table where field = '?' and other_field = '?'"
+	want := "select * from table where field = ? and other_field = ?"
+	got := mutate(input)
 	gotWant(t, got, want)
 }

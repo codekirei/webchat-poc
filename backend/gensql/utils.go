@@ -2,31 +2,12 @@ package gensql
 
 import (
 	"io"
-	"os"
 	"path/filepath"
 	"strings"
 )
 
-// This isn't efficient for very large files, but that should be okay for the
-// intended use case. As a tradeoff, this implementation is much simpler than
-// parsing each file in chunks.
-func readFile(path string) string {
-	content, err := os.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-	return string(content)
-}
-
 func writeString(w io.Writer, s string) {
 	_, err := io.WriteString(w, s)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func truncateFile(f *os.File) {
-	err := f.Truncate(0)
 	if err != nil {
 		panic(err)
 	}
@@ -71,5 +52,9 @@ func pathToFile(path string) string {
 
 func fileToConst(path string) string {
 	filename := pathToFile(path)
-	return camelize(filename)
+	return camelize(filename) + "Stmt"
+}
+
+func mutate(str string) string {
+	return strings.ReplaceAll(str, "'?'", "?")
 }
