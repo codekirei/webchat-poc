@@ -11,6 +11,12 @@ func gotWant(t *testing.T, got any, want any) {
 	}
 }
 
+func inputGotWant(t *testing.T, input any, got any, want any) {
+	if got != want {
+		t.Fatalf("\ninput: %v\ngot: %v\nwant: %v", input, got, want)
+	}
+}
+
 func isNil(val any) bool {
 	if val == nil {
 		return true
@@ -40,32 +46,20 @@ func gotNil(t *testing.T, got any) {
 	}
 }
 
-func TestCamelizeNoSpChars(t *testing.T) {
-	input := "afilename"
-	want := input
-	got := camelize(input)
-	gotWant(t, got, want)
+var camelizeCases = []struct {
+	input string
+	want  string
+}{
+	{"afilename", "afilename"},
+	{"a_file_name", "aFileName"},
+	{"a-file-name", "aFileName"},
+	{"a_file-name", "aFileName"},
 }
 
-func TestCamelizeWithUnder(t *testing.T) {
-	input := "a_file_name"
-	want := "aFileName"
-	got := camelize(input)
-	gotWant(t, got, want)
-}
-
-func TestCamelizeWithDash(t *testing.T) {
-	input := "a-file-name"
-	want := "aFileName"
-	got := camelize(input)
-	gotWant(t, got, want)
-}
-
-func TestCamelizeWithMixed(t *testing.T) {
-	input := "a_file-name"
-	want := "aFileName"
-	got := camelize(input)
-	gotWant(t, got, want)
+func TestCamelize(t *testing.T) {
+	for _, c := range camelizeCases {
+		inputGotWant(t, c.input, camelize(c.input), c.want)
+	}
 }
 
 func TestPathToFile(t *testing.T) {
